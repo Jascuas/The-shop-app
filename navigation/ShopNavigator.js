@@ -6,14 +6,14 @@ import Colors from "../constants/Colors";
 
 const ProductsNavigator = createStackNavigator(
   {
-    ProductsOverview: ProductsOverviewScreen
+    ProducsOverview: ProductsOverviewScreen
   },
   {
     defaultNavigationOptions: {
       headerStyle: {
-        backgroundColor: Platform.OS === "android" ? Colors.primary : ""
+        backgroundColor: Platform.OS === "android" ? Colors.primaryColor : ""
       },
-      headerTintColor: Platform.OS === "android" ? "white" : Colors.primary
+      headerTintColor: Platform.OS === "android" ? "white" : Colors.primaryColor
     }
   }
 );

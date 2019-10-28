@@ -11,6 +11,7 @@ const ProductsOverviewScreen = props => {
       keyExtractor={item => item.id}
       renderItem={itemData => <Text>{itemData.item.title}</Text>}
     />
+    
   );
 };
 ProductsOverviewScreen.navigationOptions = {
