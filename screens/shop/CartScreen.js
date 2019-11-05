@@ -7,7 +7,7 @@ import CartItem from "../../components/shop/CartItem";
 import * as cartActions from "../../store/actions/cart";
 import * as orderActions from "../../store/actions/orders";
 
-const StartGameScreen = props => {
+const CartScreen = props => {
   const cartTotalAmount = useSelector(state => state.cart.totalAmount);
   const cartItems = useSelector(state => {
     const transformedCartItems = [];
@@ -58,7 +58,11 @@ const StartGameScreen = props => {
     </View>
   );
 };
-
+CartScreen.navigationOptions = navData => {
+  return {
+    headerTitle: "Your Cart"
+  };
+};
 const styles = StyleSheet.create({
   screen: {
     margin: 20
@@ -86,4 +90,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default StartGameScreen;
+export default CartScreen;
