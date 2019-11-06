@@ -5,8 +5,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
-  Platform,
-  Alert
+  Platform
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
@@ -29,9 +28,7 @@ const EditProductScreen = props => {
   const [description, setDescription] = useState(
     editedProduct ? editedProduct.description : ""
   );
-  const deleteHandler = () => {
-    Alert.alert("Are you sure?", "Do you really want to delete this item?")
-  }
+  
 
   const submitHandler = useCallback(() => {
     if (editedProduct) {
