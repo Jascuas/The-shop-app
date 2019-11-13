@@ -1,11 +1,12 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect, useCallback } from "react";
 import {
   View,
   ScrollView,
   Text,
   TextInput,
   StyleSheet,
-  Platform
+  Platform,
+  Alert
 } from "react-native";
 import { HeaderButtons, Item } from "react-navigation-header-buttons";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +14,12 @@ import { useSelector, useDispatch } from "react-redux";
 import HeaderButton from "../../components/UI/HeaderButtom";
 import * as productsActions from "../../store/actions/products";
 
+const FORM_INPUT_UPDATE = "FORM_INPUT_UPDATE"
+
+const formReducer = (state, action) => {
+  if (action.type === "FORM_INPUT_UPDATE") {
+  }
+};
 const EditProductScreen = props => {
   const prodId = props.navigation.getParam("productId");
   const editedProduct = useSelector(state =>
@@ -20,17 +27,31 @@ const EditProductScreen = props => {
   );
   const dispatch = useDispatch();
 
-  const [title, setTitle] = useState(editedProduct ? editedProduct.title : "");
-  const [imageUrl, setImageUrl] = useState(
-    editedProduct ? editedProduct.imageUrl : ""
-  );
-  const [price, setPrice] = useState("");
-  const [description, setDescription] = useState(
-    editedProduct ? editedProduct.description : ""
-  );
-  
+ const [formState, dispatchFormState] = useReducer(formReducer, {
+    inputValues: {
+      title: editedProduct ? editedProduct.title : "",
+      imageUrl= editedProduct ? editedProduct.imageUrl : "",
+      description = editedProduct ? editedProduct.description : "",
+      price = ""
+    },
+    inputValidities: {
+      title: editedProduct ? true : false,
+      imageUrl: editedProduct ? true : false,
+      description: editedProduct ? true : false,
+      price: editedProduct ? true : false
+    },
+    formIsValid: editedProduct ? true : false,
+  });
 
   const submitHandler = useCallback(() => {
+    if (!titleIsValid) {
+      Alert.alert("Wrong input!", "Please check the errors in the form.", [
+        {
+          text: "Okey"
+        }
+      ]);
+      return;
+    }
     if (editedProduct) {
       dispatch(
         productsActions.updateProduct(prodId, title, description, imageUrl)
@@ -47,6 +68,18 @@ const EditProductScreen = props => {
     props.navigation.setParams({ submit: submitHandler });
   }, [submitHandler]);
 
+  const textChangeHandler = (inputIdentifier, text) => {
+    let isValid = false;
+    if (text.trim().length > 0) {
+      isValid = true;
+    }
+    dispatchFormState({
+      type: FORM_INPUT_UPDATE, 
+      value: text, 
+      isValid: isValid, 
+      input: inputIdentifier
+    });
+  };
   return (
     <ScrollView>
       <View style={styles.form}>
@@ -55,15 +88,19 @@ const EditProductScreen = props => {
           <TextInput
             style={styles.input}
             value={title}
-            onChangeText={text => setTitle(text)}
+            onChangeText={textChangeHandler}
+            autoCapitalize="sentences"
+            returnKeyType="next"
           />
+          {!titleIsValid && <Text>Please enter a valid title!</Text>}
         </View>
         <View style={styles.formControl}>
           <Text style={styles.label}>Image URL</Text>
           <TextInput
             style={styles.input}
             value={imageUrl}
-            onChangeText={text => setImageUrl(text)}
+            onChangeText={textChangeHandler}
+            returnKeyType="next"
           />
         </View>
         {editedProduct ? null : (
@@ -73,6 +110,8 @@ const EditProductScreen = props => {
               style={styles.input}
               value={price}
               onChangeText={text => setPrice(text)}
+              keyboardType="decimal-pad"
+              returnKeyType="next"
             />
           </View>
         )}
@@ -82,6 +121,7 @@ const EditProductScreen = props => {
             style={styles.input}
             value={description}
             onChangeText={text => setDescription(text)}
+            returnKeyType="done"
           />
         </View>
       </View>
